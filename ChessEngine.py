@@ -4,18 +4,25 @@ class GameState():
         self.board=[
             ["bR","bN","bB","bQ","bK"],
             ["bp","bp","bp","bp","bp"],
-            ["--","bp","--","--","--"],
+            ["--","--","--","--","--"],
             ["wp","wp","wp","wp","wp"],
             ["wR","wN","wB","wQ","wK"]
         ]
         self.moveFunctions = {'p':self.getPawnMoves,"R":self.getRookMoves,"N":self.getNightMoves,"K":self.getKingMoves,"Q":self.getQueenMoves,"B":self.getBishopMoves}
         self.whiteToMove = True
         self.moveLog=[]
+        self.whiteKingLocation=(4,4)
+        self.blackKingLocation=(0,4)
     def makeMove(self,move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
+        if move.pieceMoved == "wK":
+            self.whiteKingLocation = (move.endRow,move.endCol)
+        elif move.pieceMoved == "bK":
+            self.blackKingLocation =(move.endRow,move.endCol)
+            
     def undoMove(self):
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
@@ -55,15 +62,69 @@ class GameState():
 
 
     def getRookMoves(self,r,c,moves):
-        pass
+        directions = ((-1,0), (0,-1), (1,0), (0,1))
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1,5):
+                endRow = r + d[0] * i
+                endCol = c + d[1] * i
+                if 0 <= endRow < 5 and 0 <= endCol < 5:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c),(endRow,endCol),self.board))
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r,c),(endRow,endCol),self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
+
+    
     def getBishopMoves(self,r,c,moves):
-        pass
+        directions=((-1,-1), (-1,1), (1,-1), (1,1))
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1,5):
+                endRow = r + d[0] * i
+                endCol = c + d[1] * i
+                if 0 <= endRow < 5 and 0 <= endCol < 5:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c),(endRow,endCol),self.board))
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r,c),(endRow,endCol),self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
+        
     def getNightMoves(self,r,c,moves):
-        pass
+        knightsMoves=((-2,-1),(-2,1),(-1,-2),(-1,2),(1,-2),(1,2),(2,-1),(2,1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for m in knightsMoves:
+            endRow = r + m[0]
+            endCol = c + m[1]
+            if 0 <= endRow < 5 and 0 <= endCol < 5:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((r,c),(endRow,endCol),self.board))
+
     def getQueenMoves(self,r,c,moves):
-        pass
+        self.getRookMoves(r,c,moves)
+        self.getBishopMoves(r,c,moves)
     def getKingMoves(self,r,c,moves):
-        pass
+        kingMoves = ((-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for i in range(5):
+            endRow = r + kingMoves[i][0]
+            endCol = c + kingMoves[i][1]
+            if 0 <= endRow < 5 and 0 <= endCol <5:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((r,c),(endRow,endCol),self.board))
+
 class Move():
     ranksToRows = {"1": 4,"2": 3,"3": 2,"4": 1,"5": 0}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
