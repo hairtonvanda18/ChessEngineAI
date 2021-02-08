@@ -1,6 +1,6 @@
 import pygame as p
 import ChessEngine
-    
+import ChessAi    
     
 WIDTH = HEIGHT = 400
 DIMENSION = 5 
@@ -39,12 +39,15 @@ def main():
     sqSelected = ()
     playerClicks = []
     gameOver = False
+    playerOne = True
+    playerTwo = False
     while running:
+        humansTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:
-                if not gameOver:
+                if not gameOver and humansTurn:
                     location = p.mouse.get_pos()
                     col = location[0]//SQ_SIZE
                     row = location[1]//SQ_SIZE
@@ -78,6 +81,13 @@ def main():
                     playerClicks = ()
                     moveMade = False
                     animate = False
+        if not gameOver and not humansTurn:
+             AIMove = ChessAi.findBestMove(gs,validmoves)
+             if AIMove is None:
+                 AIMove = ChessAi.findRandomMove(validmoves)
+             gs.makeMove(AIMove)
+             moveMade = True
+             animate = True
         if moveMade:
             if animate:
                 animateMove(gs.moveLog[-1],screen,gs.board,clock)
