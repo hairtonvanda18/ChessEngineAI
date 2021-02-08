@@ -51,7 +51,7 @@ class GameState():
                 self.staleMate = True
         else:
             self.checkMate = False
-            self.staleMate = False
+            self.staleMate = False 
         return moves 
     def inCheck(self):
         if self.whiteToMove:
