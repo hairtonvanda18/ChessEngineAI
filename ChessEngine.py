@@ -4,10 +4,11 @@ class GameState():
         self.board=[
             ["bR","bN","bB","bQ","bK"],
             ["bp","bp","bp","bp","bp"],
-            ["--","--","--","--","--"],
+            ["--","bp","--","--","--"],
             ["wp","wp","wp","wp","wp"],
             ["wR","wN","wB","wQ","wK"]
         ]
+        self.moveFunctions = {'p':self.getPawnMoves,"R":self.getRookMoves,"N":self.getNightMoves,"K":self.getKingMoves,"Q":self.getQueenMoves,"B":self.getBishopMoves}
         self.whiteToMove = True
         self.moveLog=[]
     def makeMove(self,move):
@@ -30,26 +31,29 @@ class GameState():
                 turn = self.board[r][c][0]
                 if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1]
-                    if piece == "p":
-                        self.getPawnMoves(r,c,moves)
-                    elif piece == "R":
-                        self.getRookMoves(r,c,moves)
-                    elif piece == "B":
-                        self.getBishopMoves(r,c,moves)
-                    elif piece == "N":
-                        self.getNightMoves(r,c,moves)
-                    elif piece == "Q":
-                        self.getQueenMoves(r,c,moves)
-                    elif piece == "K":
-                        self.getKingMoves(r,c,moves)
+                    self.moveFunctions[piece](r,c,moves)
         return moves
     def getPawnMoves(self,r,c,moves):
         if self.whiteToMove:
             if self.board[r-1][c] == "--":
                 moves.append(Move((r,c),(r-1,c),self.board))
-        if c-1 >= 0:
-            if self.board[r-1][c-1][0] == 'b':
-                 
+            if c-1 >= 0:
+                if self.board[r-1][c-1][0] == 'b':
+                    moves.append(Move((r,c),(r-1,c-1),self.board))
+            if c+1 <= 4:
+                if self.board[r-1][c+1][0] == 'b':
+                    moves.append(Move((r,c),(r-1,c+1),self.board))
+        else:
+            if self.board[r+1][c] == "--":
+                moves.append(Move((r,c),(r+1,c),self.board))
+            if c-1 >= 0:
+                if self.board[r+1][c-1][0] == 'w':
+                    moves.append(Move((r,c),(r+1,c-1),self.board))
+            if c+1 <= 4:
+                if self.board[r+1][c+1][0] == 'w':
+                    moves.append(Move((r,c),(r+1,c+1),self.board))
+
+
     def getRookMoves(self,r,c,moves):
         pass
     def getBishopMoves(self,r,c,moves):
