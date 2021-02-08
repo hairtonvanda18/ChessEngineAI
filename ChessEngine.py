@@ -24,6 +24,41 @@ class GameState():
     def getValidMoves(self):
         return self.getAllPossibleMoves()
     def getAllPossibleMoves(self):
+        moves = []
+        for r in range(len(self.board)):
+            for c in range(len(self.board[r])):
+                turn = self.board[r][c][0]
+                if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
+                    piece = self.board[r][c][1]
+                    if piece == "p":
+                        self.getPawnMoves(r,c,moves)
+                    elif piece == "R":
+                        self.getRookMoves(r,c,moves)
+                    elif piece == "B":
+                        self.getBishopMoves(r,c,moves)
+                    elif piece == "N":
+                        self.getNightMoves(r,c,moves)
+                    elif piece == "Q":
+                        self.getQueenMoves(r,c,moves)
+                    elif piece == "K":
+                        self.getKingMoves(r,c,moves)
+        return moves
+    def getPawnMoves(self,r,c,moves):
+        if self.whiteToMove:
+            if self.board[r-1][c] == "--":
+                moves.append(Move((r,c),(r-1,c),self.board))
+        if c-1 >= 0:
+            if self.board[r-1][c-1][0] == 'b':
+                 
+    def getRookMoves(self,r,c,moves):
+        pass
+    def getBishopMoves(self,r,c,moves):
+        pass
+    def getNightMoves(self,r,c,moves):
+        pass
+    def getQueenMoves(self,r,c,moves):
+        pass
+    def getKingMoves(self,r,c,moves):
         pass
 class Move():
     ranksToRows = {"1": 4,"2": 3,"3": 2,"4": 1,"5": 0}
@@ -37,6 +72,11 @@ class Move():
         self.endCol = endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.moveId = self.startRow*1000 + self.startCol * 100 + self.endRow*10 + self.endCol
+    def __eq__(self,other):
+        if isinstance(other,Move):
+            return self.moveId == other.moveId
+        return False
     def getChessNotation(self):
         return self.getRankFile(self.startRow,self.startCol) + self.getRankFile(self.endRow,self.endCol) 
     def getRankFile(self,r,c):
