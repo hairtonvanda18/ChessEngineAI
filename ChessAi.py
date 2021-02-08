@@ -12,6 +12,7 @@ def findBestMove(gs,validmoves):
     for playerMove in validmoves:
         gs.makeMove(playerMove)
         oppMoves=gs.getValidMoves()
+        random.shuffle(oppMoves)
         oppMaxScore = -CHECKMATE
         for oppMove in oppMoves:
             gs.makeMove(oppMove)
@@ -20,10 +21,13 @@ def findBestMove(gs,validmoves):
             elif gs.staleMate:
                 score = STALEMATE
             score = -turnMultiplier * scoreMaterial(gs.board)
-            if score < maxScore:
-                maxScore= score
+            if score > oppMaxScore:
+                oppMaxScore= score
                 bestPlayerMove= playerMove
             gs.undoMove()
+        if oppMaxScore < oppMinMaxScore:
+            oppMinMaxScore = oppMinMaxScore
+            bestPlayerMove = playerMove
         gs.undoMove()
     return bestPlayerMove
 def scoreMaterial(board):
