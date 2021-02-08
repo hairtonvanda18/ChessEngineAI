@@ -13,7 +13,18 @@ def loadImages():
             "bp","wp","wR","wN","wB","wQ","wK"]
     for piece in pieces:
         IMAGES[piece] =p.transform.scale( p.image.load("Images/"+piece+".png"),(SQ_SIZE,SQ_SIZE))
-
+def highlightSquares(screen,gs,validmoves,sqSelected):
+    if sqSelected != ():
+        r, c = sqSelected
+        if gs.board[r][c][0] == ('w' if gs.whiteToMove else 'b'):
+            s = p.Surface((SQ_SIZE,SQ_SIZE))
+            s.set_alpha(100)
+            s.fill(p.Color("blue"))
+            screen.blit(s,(c*SQ_SIZE,r*SQ_SIZE))
+            s.fill(p.Color("yellow"))
+            for move in validmoves:
+                if move.startRow == r and move.startCol == c:
+                    screen.blit(s,(move.endCol*SQ_SIZE,move.endRow*SQ_SIZE))
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH,HEIGHT))
@@ -44,7 +55,7 @@ def main():
                     move = ChessEngine.Move(playerClicks[0],playerClicks[1],gs.board)
                     print(move.getChessNotation())
                     for i in range(len(validmoves)):
-                        if move in validmoves[i]:
+                        if move == validmoves[i]:
                             gs.makeMove(validmoves[i])
                             moveMade = True 
                             sqSelected = ()
@@ -58,14 +69,15 @@ def main():
         if moveMade:
             validmoves = gs.getValidMoves()
             moveMade = False
-        drawGameState(screen,gs)
+        drawGameState(screen,gs,validmoves,sqSelected)
         clock.tick(MAX_FPS)
         p.display.flip()
         
 
-def drawGameState(screen,gs):
+def drawGameState(screen,gs,validmoves,sqSelected):
     drawBoard(screen)
     drawPieces(screen,gs.board)
+    highlightSquares(screen,gs,validmoves,sqSelected)
 
 def drawBoard(screen):
     colors = [p.Color("gray"),p.Color("white")]
