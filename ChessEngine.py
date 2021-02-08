@@ -174,6 +174,7 @@ class Move():
         self.endCol = endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.isPawnPromotion = False
         self.moveId = self.startRow*1000 + self.startCol * 100 + self.endRow*10 + self.endCol
     def __eq__(self,other):
         if isinstance(other,Move):
