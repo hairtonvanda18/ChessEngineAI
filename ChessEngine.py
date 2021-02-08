@@ -15,6 +15,16 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
+    def undoMove(self):
+        if len(self.moveLog) != 0:
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
+            self.whiteToMove = not self.whiteToMove
+    def getValidMoves(self):
+        return self.getAllPossibleMoves()
+    def getAllPossibleMoves(self):
+        pass
 class Move():
     ranksToRows = {"1": 4,"2": 3,"3": 2,"4": 1,"5": 0}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
