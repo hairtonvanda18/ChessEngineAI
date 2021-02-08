@@ -13,6 +13,9 @@ class GameState():
         self.moveLog=[]
         self.whiteKingLocation=(4,4)
         self.blackKingLocation=(0,4)
+        self.inCheck = False
+        self.pins = []
+        self.checks = []
         self.checkMate = False
         self.staleMate = False
     def makeMove(self,move):
@@ -53,21 +56,37 @@ class GameState():
             self.checkMate = False
             self.staleMate = False 
         return moves 
-    def inCheck(self):
+    def checkForPinsAndChecks(self):
+        pins = []
+        checks = []
+        inCheck = False
         if self.whiteToMove:
-            return self.squareUnderAttack(self.whiteKingLocation[0],self.whiteKingLocation[1])
+            enemyColor = "b"
+            allyColor = "w"
+            startRow = self.whiteKingLocation[0]
+            startCol = self.whiteKingLocation[1]
         else:
-            return self.squareUnderAttack(self.blackKingLocation[0],self.blackKingLocation[1])
-
-    def squareUnderAttack(self,r,c):
-        self.whiteToMove = not self.whiteToMove
-        oppMoves = self.getAllPossibleMoves() 
-        self.whiteToMove = not self.whiteToMove
-        for move in oppMoves:
-            if move.endRow == r and move.endCol == c:
-                return True
-        return False
-
+            enemyColor = "w"
+            allyColor = "b"
+            startRow = self.blackKingLocation[0]
+            startCol = self.blackKingLocation[1]
+        directions = ((-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1))
+        for j in range(len(directions)):
+            d = directions[j]
+            possiblePin = ()
+            for i in range(1,5):
+                endRow = startRow + d[0] * i
+                endCol = starCol + d[1] * i
+                if 0 <= endRow < 5 and 0 <= endCol <5:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece[0] == allyColor:
+                        if possiblePin == ():
+                            possiblePin = (endRow,endCol,d[0],d[1])
+                        else:
+                            break
+                    elif endPiece[0] == enemyColor:
+                        type = endPiece[1]
+                        if 
     def getAllPossibleMoves(self):
         moves = []
         for r in range(len(self.board)):
