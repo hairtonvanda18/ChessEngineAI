@@ -39,7 +39,7 @@ def main():
     sqSelected = ()
     playerClicks = []
     gameOver = False
-    playerOne = True
+    playerOne = False
     playerTwo = False 
     while running:
         humansTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
@@ -87,6 +87,7 @@ def main():
                     gs.undoMove()
                     moveMade = True
                     animate = False
+                    gameOver = False
                 if e.key == p.K_r:
                     gs = ChessEngine.GameState()
                     validmoves= gs.getValidMoves()
@@ -94,8 +95,9 @@ def main():
                     playerClicks = ()
                     moveMade = False
                     animate = False
+                    gameOver = False
         if not gameOver and not humansTurn:
-             AIMove = ChessAi.findBestMove(gs,validmoves)
+             AIMove = ChessAi.findBestMoveMinMax(gs,validmoves)
              if AIMove is None:
                  AIMove = ChessAi.findRandomMove(validmoves)
              gs.makeMove(AIMove)
