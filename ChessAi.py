@@ -6,13 +6,12 @@ def findRandomMove(validmoves):
     return validmoves[random.randint(0,len(validmoves)-1)]
 def findBestMove(gs,validmoves):
     turnMultiplier = 1 if gs.whiteToMove else -1
-
     oppMinMaxScore = CHECKMATE
     bestPlayerMove = None
+    random.shuffle(validmoves)
     for playerMove in validmoves:
         gs.makeMove(playerMove)
         oppMoves=gs.getValidMoves()
-        random.shuffle(oppMoves)
         oppMaxScore = -CHECKMATE
         for oppMove in oppMoves:
             gs.makeMove(oppMove)
@@ -38,5 +37,4 @@ def scoreMaterial(board):
                 score += pieceScore[square[1]]
             elif square[0] == 'b':
                 score -= pieceScore[square[1]]
-
     return score

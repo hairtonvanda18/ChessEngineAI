@@ -40,11 +40,25 @@ def main():
     playerClicks = []
     gameOver = False
     playerOne = True
-    playerTwo = False
+    playerTwo = False 
     while running:
         humansTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
         for e in p.event.get():
             if e.type == p.QUIT:
+                player1 =  open("player1.txt", "w") 
+                player2 = open("player2.txt", "w")
+                player1.write("Start game \n")
+                player2.write("Start game \n")
+                player1.write("White \n")
+                player2.write("Black \n")
+                if len(gs.moveLog) > 0:
+                    for i in range(len(gs.moveLog)):
+                        if gs.moveLog[i].pieceMoved[0] == 'w':
+                            player1.write(f"{gs.moveLog[i].getChessNotation()}\n")
+                            player2.write(f"White played {gs.moveLog[i].getChessNotation()}\n")
+                        else: 
+                            player2.write(f"{gs.moveLog[i].getChessNotation()}\n")
+                            player1.write(f"Black played {gs.moveLog[i].getChessNotation()}\n")
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:
                 if not gameOver and humansTurn:
@@ -59,7 +73,6 @@ def main():
                         playerClicks.append(sqSelected)
                     if len(playerClicks) == 2:
                         move = ChessEngine.Move(playerClicks[0],playerClicks[1],gs.board)
-                        print(move.getChessNotation())
                         for i in range(len(validmoves)):
                             if move == validmoves[i]:
                                 gs.makeMove(validmoves[i])
@@ -144,13 +157,14 @@ def animateMove(move,screen,board,clock):
             screen.blit(IMAGES[move.pieceCaptured],endSquare)
         screen.blit(IMAGES[move.pieceMoved],p.Rect(c*SQ_SIZE,r*SQ_SIZE,SQ_SIZE,SQ_SIZE))
         p.display.flip()
-        clock.tick(60)
-
+        clock.tick(60)   
 def drawText(screen,text):
     font = p.font.SysFont('Helvitca', 20, True, False)
     textObject = font.render(text,0,p.Color('Black'))
     textLocation= p.Rect(0,0,WIDTH,HEIGHT).move(WIDTH/2- textObject.get_width()/2,HEIGHT/2-textObject.get_height()/2)
     screen.blit(textObject,textLocation)
+
+    
 main()
 
 
