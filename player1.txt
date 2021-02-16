@@ -1,5 +1,2 @@
 Start game 
 White 
-a2a3
-Black played b4a3
-b2a3

@@ -1,3 +1,4 @@
+import time    
 
 class GameState():
     def __init__(self):
@@ -26,7 +27,7 @@ class GameState():
             self.blackKingLocation =(move.endRow,move.endCol)
         if move.isPawnPromotion:
             self.board[move.endRow][move.endCol] = move.pieceMoved[0] + 'Q'
-
+        
 
     def undoMove(self):
         if len(self.moveLog) != 0:

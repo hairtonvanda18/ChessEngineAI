@@ -1,6 +1,7 @@
 import pygame as p
 import ChessEngine
-import ChessAi    
+import ChessAi
+import time 
     
 WIDTH = HEIGHT = 400
 DIMENSION = 5 
@@ -39,7 +40,7 @@ def main():
     sqSelected = ()
     playerClicks = []
     gameOver = False
-    playerOne = False
+    playerOne = True
     playerTwo = False 
     while running:
         humansTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
@@ -101,6 +102,7 @@ def main():
              if AIMove is None:
                  AIMove = ChessAi.findRandomMove(validmoves)
              gs.makeMove(AIMove)
+             print(end-start)
              moveMade = True
              animate = True
         if moveMade:
